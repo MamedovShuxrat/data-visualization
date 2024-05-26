@@ -20,9 +20,11 @@ $accent-pink: #E85498;
 
 .chart__wrapper {
     border-radius: 7px;
-    box-shadow: 0px 0px 1px 0px rgba(61, 57, 54, 0.04), 0px 2px 6px 0px rgba(61, 57, 54, 0.04), 0px 10px 20px 0px rgba(61, 57, 54, 0.04);
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
     background: rgb(255, 255, 255);
     padding: 20px;
+    max-height: 800px;
+
 }
 
 .title__wrapper {
@@ -36,7 +38,7 @@ $accent-pink: #E85498;
     border: none;
     background: inherit;
     cursor: pointer;
-    
+
     img {
         padding: 5px;
         transition: all .3s ease-in-out;
@@ -80,7 +82,7 @@ $accent-pink: #E85498;
 .chart__content {
     display: flex;
     column-gap: 30px;
-    padding-top: 50px;
+    padding-top: 100px;
 }
 
 .chart__lists {

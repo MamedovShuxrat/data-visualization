@@ -1,16 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('.title__btn-more');
     const dropdownMenu = button.querySelector('.dropdown-menu');
-    const btnImg = button.querySelector('.btn-img');
-    let imgTransform = 'rotate(0deg)'
 
     button.addEventListener('click', (e) => {
         e.stopPropagation();
         button.classList.toggle('active');
-
-        imgTransform = imgTransform === 'rotate(0deg)' ? 'rotate(360deg)' : 'rotate(0deg)';
-        btnImg.style.transform = imgTransform;
-    })
+    });
 
     document.addEventListener('click', () => {
         button.classList.remove('active');
@@ -20,8 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         if (e.target.tagName === 'LI') {
             const url = e.target.getAttribute('data-url');
-            button.classList.toggle('active');
-
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -32,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         }
     });
+
     const dataUrl = 'https://rcslabs.ru/ttrp5.json';
 
     fetch(dataUrl)
@@ -44,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-
 function updateChart(data) {
     document.getElementById('title').textContent = `Количество пройденных тестов "${data.title}"`;
 
@@ -53,6 +46,14 @@ function updateChart(data) {
 
     const instances = ['dev', 'test', 'prod'];
     const components = ['front', 'back', 'db'];
+    const maxChartHeight = 200;
+
+    const maxValue = Math.max(
+        ...instances.flatMap(instance => components.map(component => data[instance][component])),
+        data.norm
+    );
+
+    const scaleFactor = maxChartHeight / maxValue;
 
     const instanceSums = {};
 
@@ -64,14 +65,14 @@ function updateChart(data) {
             const value = data[instance][component];
             sum += value;
             instanceHTML += `
-                <div class="chart__list chart__list-${component}" style="height: ${value}px;">
-                    ${value}
-                </div>`;
+                        <div class="chart__list chart__list-${component}" style="height: ${value * scaleFactor}px;">
+                            ${value}
+                        </div>`;
         });
 
         instanceHTML += `
-            <span class="chart__desc">${instance}</span>
-        </div>`;
+                    <span class="chart__desc">${instance}</span>
+                </div>`;
 
         chartContent.innerHTML += instanceHTML;
         instanceSums[instance] = sum;
@@ -81,32 +82,23 @@ function updateChart(data) {
             const nextSum = components.reduce((acc, component) => acc + data[nextInstance][component], 0);
             const diff = nextSum - sum;
 
-            if (diff < 0) {
-                const differenceHTML = `
-                    <div class="chart__difference orange">
-                    <div class="chart__arrow"></div>
-                        <span>${diff > 0 ? '+' : ''}${diff}</span>
-                    </div>`;
-                chartContent.innerHTML += differenceHTML;
+            const differenceHTML = `
+                        <div class="chart__difference ${diff < 0 ? 'orange' : 'green'}">
+                            <div class="chart__arrow ${diff < 0 ? '' : 'rotate'}"></div>
+                            <span>${diff > 0 ? '+' : ''}${diff}</span>
+                        </div>`;
 
-            } else {
-                const differenceHTML = `
-                <div class="chart__difference green">
-                <div class="chart__arrow rotate"></div>
-                    <span>${diff > 0 ? '+' : ''}${diff}</span>
-                </div>`;
-                chartContent.innerHTML += differenceHTML;
-            }
+            chartContent.innerHTML += differenceHTML;
         }
     });
 
     const normHTML = `
-        <div class="chart__lists">
-            <div class="chart__list chart__list-norm" style="height: ${data.norm}px;">
-            <span class="chart__list-norm_content"> ${data.norm}</span>
-            </div>
-            <span class="chart__desc">Norm</span>
-        </div>`;
+                <div class="chart__lists">
+                    <div class="chart__list chart__list-norm" style="height: ${data.norm * scaleFactor}px;">
+                        <span class="chart__list-norm_content">${data.norm}</span>
+                    </div>
+                    <span class="chart__desc">Norm</span>
+                </div>`;
 
     chartContent.innerHTML += normHTML;
 }

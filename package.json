@@ -1,7 +1,7 @@
 {
-  "name": "test-task-skips",
+  "name": "test-task-luxms",
   "version": "1.0.0",
-  "description": "the test task of the skips company",
+  "description": "the test task of the luxms company",
   "main": "index.js",
   "scripts": {
     "build": "webpack  ",
