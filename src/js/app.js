@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const dataUrl = 'https://rcslabs.ru/ttrp5.json';
+    const dataUrl = 'https://rcslabs.ru/ttrp1.json';
 
     fetch(dataUrl)
         .then(response => response.json())
